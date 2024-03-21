@@ -20,13 +20,34 @@ const ProfileScreenStyles = StyleSheet.create({
     width: "100%",
   },
 
+  colorContainer: {
+    alignItems: "center",
+    width: "50%",
+  },
+
+  consultationPointsColor: {
+    backgroundColor: colors.palette.secondary500,
+    borderColor: colors.transparent,
+    borderRadius: 100,
+    height: 10,
+    width: 10,
+  },
+
   container: {
     alignItems: "center",
-    backgroundColor: colors.palette.primary100,
-    height: "100%",
+    // backgroundColor: colors.palette.primary100,
     paddingHorizontal: spacing.md,
     paddingTop: spacing.md,
   },
+
+  couponPointsColor: {
+    backgroundColor: colors.palette.accent500,
+    borderColor: colors.transparent,
+    borderRadius: 100,
+    height: 10,
+    width: 10,
+  },
+
   imgTint: {
     tintColor: colors.palette.neutral100,
   },
@@ -48,16 +69,21 @@ const ProfileScreenStyles = StyleSheet.create({
     borderRadius: spacing.xl,
     elevation: 6,
     flexDirection: "column",
-    // height: 300,
     padding: spacing.md,
-    position: "absolute",
     shadowColor: colors.palette.neutral1800,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 10,
-    top: 340,
+    top: -100,
     width: "80%",
     zIndex: 2,
+  },
+
+  pointsFooter: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    marginTop: 10,
+    width: "100%",
   },
 
   pointsText: {
@@ -92,7 +118,7 @@ const ProfileScreenStyles = StyleSheet.create({
     alignItems: "center",
     marginTop: spacing.lg,
   },
-  
+
   reloadButton: {
     backgroundColor: colors.transparent,
     borderColor: colors.transparent,
@@ -101,14 +127,13 @@ const ProfileScreenStyles = StyleSheet.create({
     paddingHorizontal: 0,
     paddingVertical: 0,
     position: "absolute",
-    top: 90,
+    top: 95,
     width: 30,
   },
 
   reloadImg: {
     alignSelf: "center",
     height: 25,
-    top: 5,
     width: 25,
   },
 

@@ -2,144 +2,172 @@ import React, { FC, useEffect, useState, useRef } from "react"
 import { Image, View, Animated } from "react-native"
 import { Screen, Card, Text, Button } from "../../components"
 import { DemoTabScreenProps } from "../../navigators/DemoNavigator"
-import CircularProgress, { ProgressRef } from "react-native-circular-progress-indicator"
+import { CircularProgressBase, ProgressRef } from "react-native-circular-progress-indicator"
 
 import styles from "./ProfileScreenStyles"
 import { colors } from "app/theme"
 
-const shakeAnimation = new Animated.Value(0)
-const startShake = () => {
-  Animated.sequence([
-    // sequence of animated timing for left to right shake
-    Animated.timing(shakeAnimation, { toValue: 10, duration: 100, useNativeDriver: true }),
-    Animated.timing(shakeAnimation, { toValue: -10, duration: 100, useNativeDriver: true }),
-    Animated.timing(shakeAnimation, { toValue: 10, duration: 100, useNativeDriver: true }),
-    Animated.timing(shakeAnimation, { toValue: 0, duration: 100, useNativeDriver: true }),
-  ]).start()
-}
-
-const rotateAnimation = new Animated.Value(0)
-const startRotate = () => {
-  rotateAnimation.setValue(0) // Reset the animation state to 0 before starting
-  Animated.timing(rotateAnimation, {
-    toValue: 1, // Animate from 0 (0 degrees) to 1 (360 degrees)
-    duration: 1000, // Animation duration in milliseconds
-    useNativeDriver: true, // Use native driver for better performance
-  }).start()
-}
-const spin = rotateAnimation.interpolate({
-  inputRange: [0, 1],
-  outputRange: ["0deg", "360deg"], // Degree of rotation
-})
+import {
+  shakeAnimation,
+  startShake,
+  startSettingsRotate,
+  settingsSpin,
+  startReloadRotate,
+  reloadSpin,
+} from "./ProfileScreenAnimations"
 
 const userData = {
   profileImageUrl: "./sad-face.png",
   name: "Joe Mama",
   level: 10,
-  points: 96,
+  couponPoints: 60,
+  consultationPoints: 10,
 }
 
-export const DemoCommunityScreen: FC<DemoTabScreenProps<"DemoCommunity">> =
-  function DemoCommunityScreen(_props) {
-    const [points, setPoints] = useState(0)
-    const [level, setLevel] = useState(0)
+export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCommunityScreen(
+  _props,
+) {
+  const [level, setLevel] = useState(0)
+  const [name, setName] = useState("")
+  const [couponPoints, setCouponPoints] = useState(0)
+  const [consultationPoints, setConsultationPoints] = useState(0)
+  const [totalPoints, setTotalPoints] = useState(0)
 
-    const progressRef = useRef<ProgressRef>(null)
+  const progressRef1 = useRef<ProgressRef>(null)
+  const progressRef2 = useRef<ProgressRef>(null)
 
-    useEffect(() => {
-      setPoints(userData.points)
-      setLevel(userData.level)
-    }, [])
+  const resetValues = () => {
+    setLevel(0)
+    setName("")
+    setCouponPoints(0)
+    setConsultationPoints(0)
+  }
 
-    return (
-      <Screen
-        preset="auto"
-        contentContainerStyle={styles.container}
-        safeAreaEdges={["top"]}
-        backgroundColor={colors.background}
-      >
-        <Card
-          style={styles.profileCard}
-          verticalAlignment="top"
-          LeftComponent={
-            <Image source={{ uri: "https://picsum.photos/200/300" }} style={styles.profileImage} />
-          }
-          RightComponent={
-            <View style={styles.buttonContainer}>
-              <Button style={styles.settingsButton} onPress={startRotate}>
-                <Animated.View style={{ transform: [{ rotate: spin }] }}>
-                  <Image
-                    style={styles.imgTint}
-                    source={require("../../../assets/icons/settings.png")}
-                  />
-                </Animated.View>
-              </Button>
+  const updateValues = () => {
+    resetValues()
+    setConsultationPoints(userData.consultationPoints)
+    setCouponPoints(userData.couponPoints)
+    setTotalPoints(userData.couponPoints + userData.consultationPoints)
+    setLevel(userData.level)
+    setName(userData.name)
+  }
 
-              <Button style={styles.bellButton} onPress={startShake}>
-                <Animated.View
-                  style={{
-                    transform: [{ translateX: shakeAnimation }],
-                  }}
-                >
-                  <Image
-                    style={styles.imgTint}
-                    source={require("../../../assets/icons/bell.png")}
-                  />
-                </Animated.View>
-              </Button>
-            </View>
-          }
-          HeadingComponent={
-            <Text preset="heading" size="xxl" style={styles.name} text={userData.name} />
-          }
-          ContentComponent={
-            <Text style={styles.level} text={`Level: ${level}`} preset="subheading" />
-          }
-        />
-        <Card
-          style={styles.pointsCard}
-          verticalAlignment="top"
-          HeadingComponent={
-            <View>
-              <Text style={styles.pointsText} text="Your Points" preset="formLabel" />
-              <Text
-                preset="formHelper"
-                weight="light"
-                size="xs"
-                style={styles.pointsText}
-                text={`${100 - points} points left to level up!`}
-              />
-            </View>
-          }
-          ContentComponent={
-            <View style={styles.progressBarContainer}>
-              <CircularProgress
-                value={points}
+  useEffect(() => {
+    updateValues()
+  }, [])
+
+  return (
+    <Screen
+      preset="scroll"
+      contentContainerStyle={styles.container}
+      safeAreaEdges={["top"]}
+      backgroundColor={colors.background}
+    >
+      <Card
+        style={styles.profileCard}
+        verticalAlignment="top"
+        LeftComponent={
+          <Image
+            source={require("../../../assets/images/default-profile-img.png")}
+            style={styles.profileImage}
+          />
+        }
+        RightComponent={
+          <View style={styles.buttonContainer}>
+            <Button style={styles.settingsButton} onPress={startSettingsRotate}>
+              <Animated.View style={{ transform: [{ rotate: settingsSpin }] }}>
+                <Image
+                  style={styles.imgTint}
+                  source={require("../../../assets/icons/settings.png")}
+                />
+              </Animated.View>
+            </Button>
+
+            <Button style={styles.bellButton} onPress={startShake}>
+              <Animated.View
+                style={{
+                  transform: [{ translateX: shakeAnimation }],
+                }}
+              >
+                <Image style={styles.imgTint} source={require("../../../assets/icons/bell.png")} />
+              </Animated.View>
+            </Button>
+          </View>
+        }
+        HeadingComponent={<Text preset="heading" size="xl" style={styles.name} text={name} />}
+        ContentComponent={
+          <Text style={styles.level} text={`Level: ${level}`} preset="subheading" size="md" />
+        }
+      />
+      <Card
+        style={styles.pointsCard}
+        verticalAlignment="top"
+        HeadingComponent={
+          <View>
+            <Text style={styles.pointsText} text="Your Points" preset="formLabel" />
+            <Text
+              preset="formHelper"
+              weight="light"
+              size="xs"
+              style={styles.pointsText}
+              text={`${100 - totalPoints} points left to level up!`}
+            />
+          </View>
+        }
+        ContentComponent={
+          <View style={styles.progressBarContainer}>
+            <CircularProgressBase
+              value={totalPoints}
+              radius={70}
+              duration={2000}
+              maxValue={100}
+              inActiveStrokeColor={colors.transparent}
+              activeStrokeColor={colors.palette.secondary500}
+              ref={progressRef2}
+            >
+              <CircularProgressBase
+                value={couponPoints}
                 radius={70}
                 duration={2000}
                 maxValue={100}
-                inActiveStrokeColor={colors.palette.accent200}
+                inActiveStrokeColor={colors.transparent}
                 activeStrokeColor={colors.palette.accent500}
-                progressValueColor={colors.tint}
-                ref={progressRef}
-              />
-              <Button
-                style={styles.reloadButton}
-                onPress={() => {
-                  setPoints(userData.points)
-                  progressRef.current?.reAnimate()
-                }}
+                ref={progressRef1}
               >
-                <Animated.View style={{ transform: [{ rotate: spin }] }}>
-                  <Image
-                    style={styles.reloadImg}
-                    source={require("../../../assets/icons/reload.png")}
-                  />
-                </Animated.View>
-              </Button>
+                <Text text={totalPoints.toString()} preset="subheading" size="xxl" />
+              </CircularProgressBase>
+            </CircularProgressBase>
+            <Button
+              style={styles.reloadButton}
+              onPress={() => {
+                updateValues()
+                startReloadRotate()
+                progressRef1.current?.reAnimate()
+                progressRef2.current?.reAnimate()
+              }}
+            >
+              <Animated.View style={{ transform: [{ rotate: reloadSpin }] }}>
+                <Image
+                  style={styles.reloadImg}
+                  source={require("../../../assets/icons/reload.png")}
+                />
+              </Animated.View>
+            </Button>
+          </View>
+        }
+        FooterComponent={
+          <View style={styles.pointsFooter}>
+            <View style={styles.colorContainer}>
+              <View style={styles.couponPointsColor} />
+              <Text preset="default" size="xs" weight="light" text={`Coupon: ${couponPoints}`} />
             </View>
-          }
-        />
-      </Screen>
-    )
-  }
+            <View style={styles.colorContainer}>
+              <View style={styles.consultationPointsColor} />
+              <Text preset="default" size="xs" weight="light" text={`Consultation: ${consultationPoints}`} />
+            </View>
+          </View>
+        }
+      />
+    </Screen>
+  )
+}
