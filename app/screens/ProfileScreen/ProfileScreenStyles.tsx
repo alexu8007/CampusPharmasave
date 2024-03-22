@@ -2,22 +2,11 @@ import { StyleSheet } from "react-native"
 import { colors, spacing } from "app/theme"
 
 const ProfileScreenStyles = StyleSheet.create({
-  bellButton: {
-    backgroundColor: colors.transparent,
+  circleColor: {
     borderColor: colors.transparent,
-    height: 40,
-    minHeight: 0,
-    paddingHorizontal: 0,
-    paddingVertical: 0,
-    width: 40,
-  },
-  buttonContainer: {
-    alignItems: "center",
-    flexDirection: "row-reverse",
-    justifyContent: "space-between",
-    position: "absolute",
-    top: spacing.lg,
-    width: "100%",
+    borderRadius: 100,
+    height: 10,
+    width: 10,
   },
 
   colorContainer: {
@@ -25,42 +14,14 @@ const ProfileScreenStyles = StyleSheet.create({
     width: "50%",
   },
 
-  consultationPointsColor: {
-    backgroundColor: colors.palette.secondary500,
-    borderColor: colors.transparent,
-    borderRadius: 100,
-    height: 10,
-    width: 10,
-  },
-
   container: {
     alignItems: "center",
-    // backgroundColor: colors.palette.primary100,
     paddingHorizontal: spacing.md,
     paddingTop: spacing.md,
   },
 
-  couponPointsColor: {
-    backgroundColor: colors.palette.accent500,
-    borderColor: colors.transparent,
-    borderRadius: 100,
-    height: 10,
-    width: 10,
-  },
-
   imgTint: {
     tintColor: colors.palette.neutral100,
-  },
-
-  level: {
-    color: colors.palette.accent200,
-    marginTop: 10,
-    textAlign: "center",
-  },
-  name: {
-    color: colors.palette.neutral100,
-    marginVertical: 0,
-    textAlign: "center",
   },
 
   pointsCard: {
@@ -82,12 +43,28 @@ const ProfileScreenStyles = StyleSheet.create({
   pointsFooter: {
     flexDirection: "row",
     justifyContent: "space-evenly",
-    marginTop: 10,
+    marginTop: spacing.sm,
     width: "100%",
   },
 
   pointsText: {
     textAlign: "center",
+  },
+  profileBellIconContainer: {
+    height: 40,
+    left: spacing.md,
+    position: "absolute",
+    top: spacing.md,
+    width: 40,
+  },
+  profileButtons: {
+    backgroundColor: colors.transparent,
+    borderColor: colors.transparent,
+    height: 40,
+    minHeight: 0,
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+    width: 40,
   },
 
   profileCard: {
@@ -105,13 +82,32 @@ const ProfileScreenStyles = StyleSheet.create({
     width: "100%",
     zIndex: 1,
   },
+
   profileImage: {
     borderColor: colors.palette.accent400,
     borderRadius: 100,
     borderWidth: 2,
     height: 130,
-    marginVertical: spacing.xl,
     width: 130,
+  },
+
+  profileImageContainer: {
+    alignItems: "center",
+    marginTop: spacing.xl,
+    width: "100%",
+  },
+
+  profileSettingsIconContainer: {
+    height: 40,
+    position: "absolute",
+    right: spacing.md,
+    top: spacing.md,
+    width: 40,
+  },
+
+  profileText: {
+    marginTop: spacing.md + spacing.xxs,
+    textAlign: "center",
   },
 
   progressBarContainer: {
@@ -135,16 +131,6 @@ const ProfileScreenStyles = StyleSheet.create({
     alignSelf: "center",
     height: 25,
     width: 25,
-  },
-
-  settingsButton: {
-    backgroundColor: colors.transparent,
-    borderColor: colors.transparent,
-    height: 40,
-    minHeight: 0,
-    paddingHorizontal: 0,
-    paddingVertical: 0,
-    width: 40,
   },
 })
 

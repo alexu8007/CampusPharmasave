@@ -6,15 +6,7 @@ import { CircularProgressBase, ProgressRef } from "react-native-circular-progres
 
 import styles from "./ProfileScreenStyles"
 import { colors } from "app/theme"
-
-import {
-  shakeAnimation,
-  startShake,
-  startSettingsRotate,
-  settingsSpin,
-  startReloadRotate,
-  reloadSpin,
-} from "./ProfileScreenAnimations"
+import * as animations from "./ProfileScreenAnimations"
 
 const userData = {
   profileImageUrl: "./sad-face.png",
@@ -39,6 +31,7 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
   const resetValues = () => {
     setLevel(0)
     setName("")
+    setTotalPoints(0)
     setCouponPoints(0)
     setConsultationPoints(0)
   }
@@ -67,26 +60,11 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
         style={styles.profileCard}
         verticalAlignment="top"
         LeftComponent={
-          <Image
-            source={require("../../../assets/images/default-profile-img.png")}
-            style={styles.profileImage}
-          />
-        }
-        RightComponent={
-          <View style={styles.buttonContainer}>
-            <Button style={styles.settingsButton} onPress={startSettingsRotate}>
-              <Animated.View style={{ transform: [{ rotate: settingsSpin }] }}>
-                <Image
-                  style={styles.imgTint}
-                  source={require("../../../assets/icons/settings.png")}
-                />
-              </Animated.View>
-            </Button>
-
-            <Button style={styles.bellButton} onPress={startShake}>
+          <View style={styles.profileBellIconContainer}>
+            <Button style={styles.profileButtons} onPress={animations.startShake}>
               <Animated.View
                 style={{
-                  transform: [{ translateX: shakeAnimation }],
+                  transform: [{ translateX: animations.shakeAnimation }],
                 }}
               >
                 <Image style={styles.imgTint} source={require("../../../assets/icons/bell.png")} />
@@ -94,9 +72,41 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
             </Button>
           </View>
         }
-        HeadingComponent={<Text preset="heading" size="xl" style={styles.name} text={name} />}
+        RightComponent={
+          <View style={styles.profileSettingsIconContainer}>
+            <Button style={styles.profileButtons} onPress={animations.startSettingsRotate}>
+              <Animated.View style={{ transform: [{ rotate: animations.settingsSpin }] }}>
+                <Image
+                  style={styles.imgTint}
+                  source={require("../../../assets/icons/settings.png")}
+                />
+              </Animated.View>
+            </Button>
+          </View>
+        }
+        HeadingComponent={
+          <View style={styles.profileImageContainer}>
+            <Image
+              source={require("../../../assets/images/default-profile-img.png")}
+              style={styles.profileImage}
+            />
+          </View>
+        }
         ContentComponent={
-          <Text style={styles.level} text={`Level: ${level}`} preset="subheading" size="md" />
+          <View>
+            <Text
+              preset="heading"
+              size="xl"
+              style={[styles.profileText, { color: colors.palette.neutral100 }]}
+              text={name}
+            />
+            <Text
+              style={[styles.profileText, { color: colors.palette.accent200 }]}
+              text={`Level: ${level}`}
+              preset="subheading"
+              size="md"
+            />
+          </View>
         }
       />
       <Card
@@ -141,12 +151,12 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
               style={styles.reloadButton}
               onPress={() => {
                 updateValues()
-                startReloadRotate()
+                animations.startReloadRotate()
                 progressRef1.current?.reAnimate()
                 progressRef2.current?.reAnimate()
               }}
             >
-              <Animated.View style={{ transform: [{ rotate: reloadSpin }] }}>
+              <Animated.View style={{ transform: [{ rotate: animations.reloadSpin }] }}>
                 <Image
                   style={styles.reloadImg}
                   source={require("../../../assets/icons/reload.png")}
@@ -158,12 +168,26 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
         FooterComponent={
           <View style={styles.pointsFooter}>
             <View style={styles.colorContainer}>
-              <View style={styles.couponPointsColor} />
-              <Text preset="default" size="xs" weight="light" text={`Coupon: ${couponPoints}`} />
+              <View style={[styles.circleColor, { backgroundColor: colors.palette.accent500 }]} />
+              <Text
+                preset="default"
+                size="xs"
+                weight="light"
+                style={styles.pointsText}
+                text={`Coupon\n${couponPoints}`}
+              />
             </View>
             <View style={styles.colorContainer}>
-              <View style={styles.consultationPointsColor} />
-              <Text preset="default" size="xs" weight="light" text={`Consultation: ${consultationPoints}`} />
+              <View
+                style={[styles.circleColor, { backgroundColor: colors.palette.secondary500 }]}
+              />
+              <Text
+                preset="default"
+                size="xs"
+                weight="light"
+                style={styles.pointsText}
+                text={`Consultation\n${consultationPoints}`}
+              />
             </View>
           </View>
         }
