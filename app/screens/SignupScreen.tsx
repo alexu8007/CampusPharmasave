@@ -12,8 +12,10 @@ interface SignupScreenProps extends AppStackScreenProps<"Signup"> {}
 export const SignupScreen: FC<SignupScreenProps> = observer(function SignupScreen(_props) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
 
   async function signUpWithEmail() {
+    setLoading(true)
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -22,6 +24,7 @@ export const SignupScreen: FC<SignupScreenProps> = observer(function SignupScree
     if (error) {
       Alert.alert(error.message)
     }
+    setLoading(false)
   }
 
   return (
@@ -57,10 +60,11 @@ export const SignupScreen: FC<SignupScreenProps> = observer(function SignupScree
 
       <Button
         testID="login-button"
-        text="Tap to Sign Up!"
+        text={loading ? "Signing Up..." : "Tap to Sign Up!"}
         style={$tapButton}
         preset="reversed"
         onPress={signUpWithEmail}
+        disabled={loading}
       />
 
       <Button
