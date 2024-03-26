@@ -84,6 +84,7 @@ const AppStack = observer(function AppStack() {
       {/** 🔥 Your screens go here */}
       <Stack.Screen name='Profile' component={Screens.ProfileScreen} />
       <Stack.Screen name='Reward' component={Screens.RewardScreen} />
+      <Stack.Screen name='Signup' component={Screens.SignupScreen} />
       {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )

@@ -4,6 +4,7 @@ import { TextInput, TextStyle, ViewStyle } from "react-native"
 import { Button, Icon, Screen, Text, TextField, TextFieldAccessoryProps } from "../components"
 import { useStores } from "../models"
 import { AppStackScreenProps } from "../navigators"
+
 import { colors, spacing } from "../theme"
 
 interface LoginScreenProps extends AppStackScreenProps<"Login"> {}
@@ -114,7 +115,11 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
         onPress={login}
       />
 
-      <Button style={$tapButton} text="Don't have an account? Sign Up" onPress={login} />
+      <Button
+        style={$tapButton}
+        text="Don't have an account? Sign Up"
+        onPress={() => _props.navigation.navigate("Signup")}
+      />
     </Screen>
   )
 })
