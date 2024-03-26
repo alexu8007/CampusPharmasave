@@ -19,8 +19,10 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
   const {
     authenticationStore: { authEmail, setAuthEmail, setAuthToken, validationError },
   } = useStores()
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
+    setLoading(true)
     // Here is where you could fetch credentials from keychain or storage
     // and pre-fill the form fields.
     setAuthEmail("ignite@infinite.red")
@@ -30,6 +32,7 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
     return () => {
       setAuthPassword("")
       setAuthEmail("")
+      setLoading(false)
     }
   }, [])
 
@@ -113,6 +116,7 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
         style={$tapButton}
         preset="reversed"
         onPress={login}
+        disabled={loading}
       />
 
       <Button
