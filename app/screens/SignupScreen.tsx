@@ -1,10 +1,10 @@
 import { observer } from "mobx-react-lite"
-import React, { FC, useState } from "react"
+import React, { ComponentType, FC, useState , useMemo} from "react"
 import { Alert, TextStyle, ViewStyle, View } from "react-native"
-import { Button, Screen, Text, TextField } from "../components"
+import { Button, Screen, Text, TextField , Icon , TextFieldAccessoryProps } from "../components"
 import { AppStackScreenProps } from "../navigators"
 
-import { spacing } from "../theme"
+import { spacing , colors } from "../theme"
 import { supabase } from "app/lib/supabase"
 
 interface SignupScreenProps extends AppStackScreenProps<"Signup"> {}
@@ -13,6 +13,7 @@ export const SignupScreen: FC<SignupScreenProps> = observer(function SignupScree
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")
+  const [isAuthPasswordHidden, setIsAuthPasswordHidden] = useState(true)
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
 
@@ -34,6 +35,22 @@ export const SignupScreen: FC<SignupScreenProps> = observer(function SignupScree
     }
     setLoading(false)
   }
+
+  const PasswordRightAccessory: ComponentType<TextFieldAccessoryProps> = useMemo(
+    () =>
+      function PasswordRightAccessory(props: TextFieldAccessoryProps) {
+        return (
+          <Icon
+            icon={isAuthPasswordHidden ? "view" : "hidden"}
+            color={colors.palette.neutral800}
+            containerStyle={props.style}
+            size={20}
+            onPress={() => setIsAuthPasswordHidden(!isAuthPasswordHidden)}
+          />
+        )
+      },
+    [isAuthPasswordHidden],
+  )
 
   return (
     <Screen
@@ -87,6 +104,8 @@ export const SignupScreen: FC<SignupScreenProps> = observer(function SignupScree
         autoCorrect={false}
         labelTx="loginScreen.passwordFieldLabel"
         placeholderTx="loginScreen.passwordFieldPlaceholder"
+        RightAccessory={PasswordRightAccessory}
+        secureTextEntry={isAuthPasswordHidden}
       />
 
       <Button

@@ -1,57 +1,33 @@
 import { observer } from "mobx-react-lite"
 import React, { ComponentType, FC, useEffect, useMemo, useRef, useState } from "react"
-import { TextInput, TextStyle, ViewStyle } from "react-native"
+import { TextInput, TextStyle, ViewStyle, Alert } from "react-native"
 import { Button, Icon, Screen, Text, TextField, TextFieldAccessoryProps } from "../components"
-import { useStores } from "../models"
 import { AppStackScreenProps } from "../navigators"
+import { supabase } from "../lib/supabase"
 
 import { colors, spacing } from "../theme"
 
 interface LoginScreenProps extends AppStackScreenProps<"Login"> {}
 
 export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_props) {
-  const authPasswordInput = useRef<TextInput>(null)
-
-  const [authPassword, setAuthPassword] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
   const [isAuthPasswordHidden, setIsAuthPasswordHidden] = useState(true)
-  const [isSubmitted, setIsSubmitted] = useState(false)
   const [attemptsCount, setAttemptsCount] = useState(0)
-  const {
-    authenticationStore: { authEmail, setAuthEmail, setAuthToken, validationError },
-  } = useStores()
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
+  async function signInWithEmail() {
     setLoading(true)
-    // Here is where you could fetch credentials from keychain or storage
-    // and pre-fill the form fields.
-    setAuthEmail("ignite@infinite.red")
-    setAuthPassword("ign1teIsAwes0m3")
-
-    // Return a "cleanup" function that React will run when the component unmounts
-    return () => {
-      setAuthPassword("")
-      setAuthEmail("")
-      setLoading(false)
-    }
-  }, [])
-
-  const error = isSubmitted ? validationError : ""
-
-  function login() {
-    setIsSubmitted(true)
     setAttemptsCount(attemptsCount + 1)
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    })
 
-    if (validationError) return
-
-    // Make a request to your server to get an authentication token.
-    // If successful, reset the fields and set the token.
-    setIsSubmitted(false)
-    setAuthPassword("")
-    setAuthEmail("")
-
-    // We'll mock this with a fake token.
-    setAuthToken(String(Date.now()))
+    if (error) {
+      Alert.alert(error.message) 
+    }
+    setLoading(false)
   }
 
   const PasswordRightAccessory: ComponentType<TextFieldAccessoryProps> = useMemo(
@@ -81,8 +57,8 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
       {attemptsCount > 2 && <Text tx="loginScreen.hint" size="sm" weight="light" style={$hint} />}
 
       <TextField
-        value={authEmail}
-        onChangeText={setAuthEmail}
+        value={email}
+        onChangeText={setEmail}
         containerStyle={$textField}
         autoCapitalize="none"
         autoComplete="email"
@@ -90,24 +66,19 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
         keyboardType="email-address"
         labelTx="loginScreen.emailFieldLabel"
         placeholderTx="loginScreen.emailFieldPlaceholder"
-        helper={error}
-        status={error ? "error" : undefined}
-        onSubmitEditing={() => authPasswordInput.current?.focus()}
       />
 
       <TextField
-        ref={authPasswordInput}
-        value={authPassword}
-        onChangeText={setAuthPassword}
+        value={password}
+        onChangeText={setPassword}
         containerStyle={$textField}
         autoCapitalize="none"
         autoComplete="password"
         autoCorrect={false}
-        secureTextEntry={isAuthPasswordHidden}
         labelTx="loginScreen.passwordFieldLabel"
         placeholderTx="loginScreen.passwordFieldPlaceholder"
-        onSubmitEditing={login}
         RightAccessory={PasswordRightAccessory}
+        secureTextEntry={isAuthPasswordHidden}
       />
 
       <Button
@@ -115,7 +86,7 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
         tx="loginScreen.tapToSignIn"
         style={$tapButton}
         preset="reversed"
-        onPress={login}
+        onPress={signInWithEmail}
         disabled={loading}
       />
 

@@ -16,10 +16,10 @@ import React from "react"
 import { useColorScheme } from "react-native"
 import * as Screens from "app/screens"
 import Config from "../config"
-import { useStores } from "../models"
 import { DemoNavigator, DemoTabParamList } from "./DemoNavigator"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import { colors } from "app/theme"
+import { supabase } from "app/lib/supabase"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -60,9 +60,22 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> = NativeStack
 const Stack = createNativeStackNavigator<AppStackParamList>()
 
 const AppStack = observer(function AppStack() {
-  const {
-    authenticationStore: { isAuthenticated },
-  } = useStores()
+  const  [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  
+  React.useEffect(() => {
+    const session = supabase.auth.getSession();
+
+    setIsAuthenticated(!!session);
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+
+  }, []);
 
   return (
     <Stack.Navigator
@@ -71,8 +84,6 @@ const AppStack = observer(function AppStack() {
     >
       {isAuthenticated ? (
         <>
-          <Stack.Screen name="Welcome" component={Screens.WelcomeScreen} />
-
           <Stack.Screen name="Demo" component={DemoNavigator} />
         </>
       ) : (
