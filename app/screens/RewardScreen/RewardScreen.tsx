@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState, useRef } from "react"
 import { Image, View, Animated } from "react-native"
-import { Screen, Card, Text, Button, Benefit} from "../../components"
+import { Screen, Card, Text, Button} from "../../components"
 import { DemoTabScreenProps } from "../../navigators/DemoNavigator"
 import { CircularProgressBase, ProgressRef } from "react-native-circular-progress-indicator"
 import { Bar } from "react-native-progress"
