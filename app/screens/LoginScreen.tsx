@@ -113,6 +113,8 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
         preset="reversed"
         onPress={login}
       />
+
+      <Button style={$tapButton} text="Don't have an account? Sign Up" onPress={login} />
     </Screen>
   )
 })

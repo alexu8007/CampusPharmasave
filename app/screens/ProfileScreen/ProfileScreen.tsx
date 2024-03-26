@@ -61,7 +61,11 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
         verticalAlignment="top"
         LeftComponent={
           <View style={styles.profileBellIconContainer}>
-            <Button style={styles.profileButtons} onPress={animations.startShake}>
+            <Button
+              style={styles.profileButtons}
+              pressedStyle={styles.profileButtons}
+              onPress={animations.startShake}
+            >
               <Animated.View
                 style={{
                   transform: [{ translateX: animations.shakeAnimation }],
@@ -74,7 +78,11 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
         }
         RightComponent={
           <View style={styles.profileSettingsIconContainer}>
-            <Button style={styles.profileButtons} onPress={animations.startSettingsRotate}>
+            <Button
+              style={styles.profileButtons}
+              pressedStyle={styles.profileButtons}
+              onPress={animations.startSettingsRotate}
+            >
               <Animated.View style={{ transform: [{ rotate: animations.settingsSpin }] }}>
                 <Image
                   style={styles.imgTint}
@@ -149,6 +157,7 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
             </CircularProgressBase>
             <Button
               style={styles.reloadButton}
+              pressedStyle={styles.reloadButton}
               onPress={() => {
                 updateValues()
                 animations.startReloadRotate()
