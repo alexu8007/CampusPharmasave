@@ -5,7 +5,7 @@ import { TextStyle, ViewStyle } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { Icon } from "../components"
 import { translate } from "../i18n"
-import { DemoShowroomScreen, ProfileScreen } from "../screens"
+import { ProfileScreen, RewardScreen } from "../screens"
 import { DemoPodcastListScreen } from "../screens/DemoPodcastListScreen"
 import { colors, spacing, typography } from "../theme"
 import { AppStackParamList, AppStackScreenProps } from "./AppNavigator"
@@ -18,6 +18,7 @@ export type DemoTabParamList = {
 
   // temporary
   Profile: undefined
+  Reward: undefined
 }
 
 /**
@@ -47,16 +48,6 @@ export function DemoNavigator() {
         tabBarItemStyle: $tabBarItem,
       }}
     >
-      <Tab.Screen
-        name="DemoShowroom"
-        component={DemoShowroomScreen}
-        options={{
-          tabBarLabel: translate("demoNavigator.componentsTab"),
-          tabBarIcon: ({ focused }) => (
-            <Icon icon="components" color={focused ? colors.tint : undefined} size={30} />
-          ),
-        }}
-      />
 
       <Tab.Screen
         name="DemoPodcastList"
@@ -67,6 +58,18 @@ export function DemoNavigator() {
           tabBarIcon: ({ focused }) => (
             <Icon icon="podcast" color={focused ? colors.tint : undefined} size={30} />
           ),
+        }}
+      />
+
+      {/* reward page */}
+      <Tab.Screen
+        name="Reward"
+        component={RewardScreen}
+        options={{
+          tabBarLabel: "Reward",
+          tabBarIcon: ({ focused}) => (
+            <Icon icon="clap" color={focused ? colors.tint : undefined} size={30} />
+          )
         }}
       />
 
