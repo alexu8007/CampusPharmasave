@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState, useRef } from "react"
 import { Image, View, Animated, Alert } from "react-native"
 import { Screen, Card, Text, Button } from "../../components"
 import { DemoTabScreenProps } from "../../navigators/DemoNavigator"
-import { CircularProgressBase, ProgressRef } from "react-native-circular-progress-indicator"
+import CircularProgress, { ProgressRef } from "react-native-circular-progress-indicator"
 
 import styles from "./ProfileScreenStyles"
 import { colors } from "app/theme"
@@ -15,12 +15,9 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
 ) {
   const [level, setLevel] = useState(0)
   const [name, setName] = useState("")
-  const [couponPoints, setCouponPoints] = useState(0)
-  const [consultationPoints, setConsultationPoints] = useState(0)
-  const [totalPoints, setTotalPoints] = useState(0)
+  const [points, setPoints] = useState(0)
 
   const progressRef1 = useRef<ProgressRef>(null)
-  const progressRef2 = useRef<ProgressRef>(null)
 
   const fetchUserData = async () => {
     const {
@@ -42,31 +39,9 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
       return
     }
 
-    if (data) {
-      setName(data.name)
-      setLevel(data.level)
-      setCouponPoints(data.points / 2)
-      setConsultationPoints(data.points / 2)
-      setTotalPoints(data.points)
-    } else {
-      console.log("No data found")
-      const { data: insertData, error: insertError } = await supabase
-        .from("user_info")
-        .insert([{ email: userEmail, name: name, level: 1, points: 0 }])
-        .select()
-        .single()
-
-      if (insertError) {
-        console.error(insertError)
-        return
-      }
-
-      if (insertData) {
-        setName(name)
-        setLevel(1)
-        setCouponPoints(0)
-      }
-    }
+    setName(data.name)
+    setLevel(data.level)
+    setPoints(data.points)
   }
 
   const handleLogout = async () => {
@@ -162,38 +137,27 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
         HeadingComponent={
           <View>
             <Text style={styles.pointsText} text="Your Points" preset="formLabel" />
-            <Text
+            {/* <Text
               preset="formHelper"
               weight="light"
               size="xs"
               style={styles.pointsText}
-              text={`${100 - totalPoints} points left to level up!`}
-            />
+              text={`${100 - points} points left to level up!`}
+            /> */}
           </View>
         }
         ContentComponent={
           <View style={styles.progressBarContainer}>
-            <CircularProgressBase
-              value={totalPoints}
+            <CircularProgress
+              value={points}
               radius={70}
               duration={2000}
               maxValue={100}
               inActiveStrokeColor={colors.palette.accent100}
-              activeStrokeColor={colors.palette.secondary500}
-              ref={progressRef2}
-            >
-              <CircularProgressBase
-                value={couponPoints}
-                radius={70}
-                duration={2000}
-                maxValue={100}
-                inActiveStrokeColor={colors.transparent}
-                activeStrokeColor={colors.palette.accent500}
-                ref={progressRef1}
-              >
-                <Text text={totalPoints.toString()} preset="subheading" size="xxl" />
-              </CircularProgressBase>
-            </CircularProgressBase>
+              activeStrokeColor={colors.palette.accent500}
+              progressValueColor={colors.palette.secondary500}
+              ref={progressRef1}
+            />
             <Button
               style={styles.reloadButton}
               pressedStyle={styles.reloadButton}
@@ -201,7 +165,6 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
                 fetchUserData()
                 animations.startReloadRotate()
                 progressRef1.current?.reAnimate()
-                progressRef2.current?.reAnimate()
               }}
             >
               <Animated.View style={{ transform: [{ rotate: animations.reloadSpin }] }}>
@@ -214,30 +177,37 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
           </View>
         }
         FooterComponent={
-          <View style={styles.pointsFooter}>
-            <View style={styles.colorContainer}>
-              <View style={[styles.circleColor, { backgroundColor: colors.palette.accent500 }]} />
-              <Text
-                preset="default"
-                size="xs"
-                weight="light"
-                style={styles.pointsText}
-                text={`Coupon\n${couponPoints}`}
-              />
-            </View>
-            <View style={styles.colorContainer}>
-              <View
-                style={[styles.circleColor, { backgroundColor: colors.palette.secondary500 }]}
-              />
-              <Text
-                preset="default"
-                size="xs"
-                weight="light"
-                style={styles.pointsText}
-                text={`Consultation\n${consultationPoints}`}
-              />
-            </View>
-          </View>
+          // <View style={styles.pointsFooter}>
+          //   <View style={styles.colorContainer}>
+          //     <View style={[styles.circleColor, { backgroundColor: colors.palette.accent500 }]} />
+          //     <Text
+          //       preset="default"
+          //       size="xs"
+          //       weight="light"
+          //       style={styles.pointsText}
+          //       text={`Coupon\n${points}`}
+          //     />
+          //   </View>
+          //   <View style={styles.colorContainer}>
+          //     <View
+          //       style={[styles.circleColor, { backgroundColor: colors.palette.secondary500 }]}
+          //     />
+          //     <Text
+          //       preset="default"
+          //       size="xs"
+          //       weight="light"
+          //       style={styles.pointsText}
+          //       text={`Consultation\n${points}`}
+          //     />
+          //   </View>
+          // </View>
+          <Text
+              preset="formHelper"
+              weight="light"
+              size="xs"
+              style={styles.pointsText}
+              text={`${100 - points} points left to level up!`}
+            />
         }
       />
     </Screen>

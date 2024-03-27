@@ -122,6 +122,7 @@ const ProfileScreenStyles = StyleSheet.create({
 
   progressBarContainer: {
     alignItems: "center",
+    marginBottom: spacing.xl,
     marginTop: spacing.lg,
   },
 
