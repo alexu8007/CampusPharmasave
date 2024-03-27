@@ -4,7 +4,7 @@ import { TextStyle, ViewStyle, Alert } from "react-native"
 import { Button, Icon, Screen, Text, TextField, TextFieldAccessoryProps } from "../components"
 import { AppStackScreenProps } from "../navigators"
 import { supabase } from "../lib/supabase"
-import { userStore } from '../models/UserStore'
+import { userStore } from "../models/UserStore"
 
 import { colors, spacing } from "../theme"
 
@@ -26,9 +26,10 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
     })
 
     if (error) {
-      Alert.alert(error.message);
+      setPassword("")
+      Alert.alert(error.message)
     } else {
-      userStore.setUserEmail(email);
+      userStore.setUserEmail(email)
     }
     setLoading(false)
   }
@@ -86,7 +87,7 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
 
       <Button
         testID="login-button"
-        tx="loginScreen.tapToSignIn"
+        text={loading ? "Signing In..." : "Sign In"}
         style={$tapButton}
         preset="reversed"
         onPress={signInWithEmail}

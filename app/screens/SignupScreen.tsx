@@ -1,10 +1,10 @@
 import { observer } from "mobx-react-lite"
-import React, { ComponentType, FC, useState , useMemo} from "react"
+import React, { ComponentType, FC, useState, useMemo } from "react"
 import { Alert, TextStyle, ViewStyle, View } from "react-native"
-import { Button, Screen, Text, TextField , Icon , TextFieldAccessoryProps } from "../components"
+import { Button, Screen, Text, TextField, Icon, TextFieldAccessoryProps } from "../components"
 import { AppStackScreenProps } from "../navigators"
 
-import { spacing , colors } from "../theme"
+import { spacing, colors } from "../theme"
 import { supabase } from "app/lib/supabase"
 
 interface SignupScreenProps extends AppStackScreenProps<"Signup"> {}
@@ -15,25 +15,39 @@ export const SignupScreen: FC<SignupScreenProps> = observer(function SignupScree
   const [email, setEmail] = useState("")
   const [isAuthPasswordHidden, setIsAuthPasswordHidden] = useState(true)
   const [password, setPassword] = useState("")
+  const [rePassword, setRePassword] = useState("")
   const [loading, setLoading] = useState(false)
+
+  const checkPassword = () => {
+    if (password !== rePassword) {
+      Alert.alert("Passwords do not match")
+      setPassword("")
+      setRePassword("")
+      return false
+    } else {
+      return true
+    }
+  }
 
   async function signUpWithEmail() {
     setLoading(true)
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          first_name: firstName,
-          last_name: lastName,
+    if (checkPassword()) {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            first_name: firstName,
+            last_name: lastName,
+          },
         },
-      },
-    })
+      })
 
-    if (error) {
-      Alert.alert(error.message)
+      if (error) {
+        Alert.alert(error.message)
+      }
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   const PasswordRightAccessory: ComponentType<TextFieldAccessoryProps> = useMemo(
@@ -69,7 +83,7 @@ export const SignupScreen: FC<SignupScreenProps> = observer(function SignupScree
           autoComplete="name"
           autoCorrect={false}
           label="First Name"
-          placeholder="Enter first name"
+          placeholder="Ex. Joe"
         />
         <TextField
           value={lastName}
@@ -79,7 +93,7 @@ export const SignupScreen: FC<SignupScreenProps> = observer(function SignupScree
           autoComplete="name"
           autoCorrect={false}
           label="Last Name"
-          placeholder="Enter last name"
+          placeholder="Ex. Mama"
         />
       </View>
 
@@ -92,7 +106,7 @@ export const SignupScreen: FC<SignupScreenProps> = observer(function SignupScree
         autoCorrect={false}
         keyboardType="email-address"
         labelTx="loginScreen.emailFieldLabel"
-        placeholderTx="loginScreen.emailFieldPlaceholder"
+        placeholder="Ex. joe@mama.com"
       />
 
       <TextField
@@ -104,6 +118,17 @@ export const SignupScreen: FC<SignupScreenProps> = observer(function SignupScree
         autoCorrect={false}
         labelTx="loginScreen.passwordFieldLabel"
         placeholderTx="loginScreen.passwordFieldPlaceholder"
+        RightAccessory={PasswordRightAccessory}
+        secureTextEntry={isAuthPasswordHidden}
+      />
+      <TextField
+        value={rePassword}
+        onChangeText={setRePassword}
+        containerStyle={$textField}
+        autoCapitalize="none"
+        autoComplete="password"
+        autoCorrect={false}
+        placeholder="Re-enter password"
         RightAccessory={PasswordRightAccessory}
         secureTextEntry={isAuthPasswordHidden}
       />
@@ -136,19 +161,19 @@ const $signUp: TextStyle = {
 }
 
 const $textField: ViewStyle = {
-  marginBottom: spacing.lg,
+  marginBottom: spacing.xs,
 }
 
 const $tapButton: ViewStyle = {
-  marginTop: spacing.xs,
+  marginTop: spacing.lg,
 }
 
 const $nameContainer: ViewStyle = {
-    flexDirection: 'row',
-    justifyContent:'space-between',
-    marginBottom: spacing.lg,
+  flexDirection: "row",
+  justifyContent: "space-between",
+  marginBottom: spacing.xs,
 }
 
 const $name: ViewStyle = {
-    width: '45%',
+  width: "49%",
 }

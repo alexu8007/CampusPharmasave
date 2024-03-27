@@ -60,22 +60,21 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> = NativeStack
 const Stack = createNativeStackNavigator<AppStackParamList>()
 
 const AppStack = observer(function AppStack() {
-  const  [isAuthenticated, setIsAuthenticated] = React.useState(false);
-  
-  React.useEffect(() => {
-    const session = supabase.auth.getSession();
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false)
 
-    setIsAuthenticated(!!session);
+  React.useEffect(() => {
+    const session = supabase.auth.getSession()
+
+    setIsAuthenticated(!!session)
 
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      setIsAuthenticated(!!session);
-    });
+      setIsAuthenticated(!!session)
+    })
 
     return () => {
-      authListener.subscription.unsubscribe();
-    };
-
-  }, []);
+      authListener.subscription.unsubscribe()
+    }
+  }, [])
 
   return (
     <Stack.Navigator
@@ -89,13 +88,13 @@ const AppStack = observer(function AppStack() {
       ) : (
         <>
           <Stack.Screen name="Login" component={Screens.LoginScreen} />
-          <Stack.Screen name='Signup' component={Screens.SignupScreen} />
+          <Stack.Screen name="Signup" component={Screens.SignupScreen} />
         </>
       )}
 
       {/** 🔥 Your screens go here */}
-      <Stack.Screen name='Profile' component={Screens.ProfileScreen} />
-      <Stack.Screen name='Reward' component={Screens.RewardScreen} />
+      <Stack.Screen name="Profile" component={Screens.ProfileScreen} />
+      <Stack.Screen name="Reward" component={Screens.RewardScreen} />
       {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )

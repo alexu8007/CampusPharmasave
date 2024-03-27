@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState, useRef } from "react"
-import { Image, View, Animated } from "react-native"
+import { Image, View, Animated, Alert } from "react-native"
 import { Screen, Card, Text, Button } from "../../components"
 import { DemoTabScreenProps } from "../../navigators/DemoNavigator"
 import { CircularProgressBase, ProgressRef } from "react-native-circular-progress-indicator"
@@ -7,14 +7,8 @@ import { CircularProgressBase, ProgressRef } from "react-native-circular-progres
 import styles from "./ProfileScreenStyles"
 import { colors } from "app/theme"
 import * as animations from "./ProfileScreenAnimations"
-
-const userData = {
-  profileImageUrl: "./sad-face.png",
-  name: "Joe Mama",
-  level: 10,
-  couponPoints: 60,
-  consultationPoints: 10,
-}
+import { supabase } from "app/lib/supabase"
+import { userStore } from "app/models/UserStore"
 
 export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCommunityScreen(
   _props,
@@ -28,26 +22,65 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
   const progressRef1 = useRef<ProgressRef>(null)
   const progressRef2 = useRef<ProgressRef>(null)
 
-  const resetValues = () => {
-    setLevel(0)
-    setName("")
-    setTotalPoints(0)
-    setCouponPoints(0)
-    setConsultationPoints(0)
+  const fetchUserData = async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+    const userEmail = user?.email
+    if (!userEmail) {
+      return
+    }
+
+    const { data, error } = await supabase
+      .from("user_info")
+      .select("name, level, points")
+      .eq("email", userEmail)
+      .single()
+
+    if (error) {
+      Alert.alert(error.message)
+      return
+    }
+
+    if (data) {
+      setName(data.name)
+      setLevel(data.level)
+      setCouponPoints(data.points / 2)
+      setConsultationPoints(data.points / 2)
+      setTotalPoints(data.points)
+    } else {
+      console.log("No data found")
+      const { data: insertData, error: insertError } = await supabase
+        .from("user_info")
+        .insert([{ email: userEmail, name: name, level: 1, points: 0 }])
+        .select()
+        .single()
+
+      if (insertError) {
+        console.error(insertError)
+        return
+      }
+
+      if (insertData) {
+        setName(name)
+        setLevel(1)
+        setCouponPoints(0)
+      }
+    }
   }
 
-  const updateValues = () => {
-    resetValues()
-    setConsultationPoints(userData.consultationPoints)
-    setCouponPoints(userData.couponPoints)
-    setTotalPoints(userData.couponPoints + userData.consultationPoints)
-    setLevel(userData.level)
-    setName(userData.name)
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut()
+    if (error) {
+      Alert.alert("Logout Failed", error.message)
+    } else {
+      _props.navigation.replace("Login")
+    }
   }
 
   useEffect(() => {
-    updateValues()
-  }, [])
+    fetchUserData()
+  }, [userStore.userEmail])
 
   return (
     <Screen
@@ -77,19 +110,29 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
           </View>
         }
         RightComponent={
-          <View style={styles.profileSettingsIconContainer}>
-            <Button
-              style={styles.profileButtons}
-              pressedStyle={styles.profileButtons}
-              onPress={animations.startSettingsRotate}
-            >
-              <Animated.View style={{ transform: [{ rotate: animations.settingsSpin }] }}>
+          <View style={styles.profileIconsContainer}>
+              <Button
+                style={styles.profileButtons}
+                pressedStyle={styles.profileButtons}
+                onPress={animations.startSettingsRotate}
+              >
+                <Animated.View style={{ transform: [{ rotate: animations.settingsSpin }] }}>
+                  <Image
+                    style={styles.imgTint}
+                    source={require("../../../assets/icons/settings.png")}
+                  />
+                </Animated.View>
+              </Button>
+              <Button
+                style={styles.profileButtons}
+                pressedStyle={styles.profileButtons}
+                onPress={handleLogout}
+              >
                 <Image
-                  style={styles.imgTint}
-                  source={require("../../../assets/icons/settings.png")}
+                  style={styles.profileLogoutButton}
+                  source={require("../../../assets/icons/logout.png")}
                 />
-              </Animated.View>
-            </Button>
+              </Button>
           </View>
         }
         HeadingComponent={
@@ -159,7 +202,7 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
               style={styles.reloadButton}
               pressedStyle={styles.reloadButton}
               onPress={() => {
-                updateValues()
+                fetchUserData()
                 animations.startReloadRotate()
                 progressRef1.current?.reAnimate()
                 progressRef2.current?.reAnimate()

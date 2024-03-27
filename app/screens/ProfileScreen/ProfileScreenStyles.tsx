@@ -58,9 +58,11 @@ const ProfileScreenStyles = StyleSheet.create({
     width: 40,
   },
   profileButtons: {
+    alignItems: 'center',
     backgroundColor: colors.transparent,
     borderColor: colors.transparent,
     height: 40,
+    justifyContent: 'center',
     minHeight: 0,
     paddingHorizontal: 0,
     paddingVertical: 0,
@@ -97,7 +99,14 @@ const ProfileScreenStyles = StyleSheet.create({
     width: "100%",
   },
 
-  profileSettingsIconContainer: {
+  profileLogoutButton: {
+    height: 25,
+    tintColor: colors.palette.neutral100,
+    width: 25,
+  },
+
+  profileIconsContainer: {
+    alignItems: 'center',
     height: 40,
     position: "absolute",
     right: spacing.md,
