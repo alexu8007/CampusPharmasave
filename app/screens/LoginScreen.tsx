@@ -1,17 +1,18 @@
 import { observer } from "mobx-react-lite"
-import React, { ComponentType, FC, useEffect, useMemo, useRef, useState } from "react"
-import { TextInput, TextStyle, ViewStyle, Alert } from "react-native"
+import React, { ComponentType, FC, useMemo, useState } from "react"
+import { TextStyle, ViewStyle, Alert } from "react-native"
 import { Button, Icon, Screen, Text, TextField, TextFieldAccessoryProps } from "../components"
 import { AppStackScreenProps } from "../navigators"
 import { supabase } from "../lib/supabase"
+import { userStore } from '../models/UserStore'
 
 import { colors, spacing } from "../theme"
 
 interface LoginScreenProps extends AppStackScreenProps<"Login"> {}
 
 export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_props) {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [email, setEmail] = useState<string>("")
+  const [password, setPassword] = useState<string>("")
   const [isAuthPasswordHidden, setIsAuthPasswordHidden] = useState(true)
   const [attemptsCount, setAttemptsCount] = useState(0)
   const [loading, setLoading] = useState(false)
@@ -25,7 +26,9 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
     })
 
     if (error) {
-      Alert.alert(error.message) 
+      Alert.alert(error.message);
+    } else {
+      userStore.setUserEmail(email);
     }
     setLoading(false)
   }

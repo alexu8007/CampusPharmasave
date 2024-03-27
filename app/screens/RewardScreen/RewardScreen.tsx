@@ -8,24 +8,16 @@ import { Bar } from "react-native-progress"
 import styles from "./RewardScreenStyles"
 import { colors } from "app/theme"
 import * as animations from "./RewardScreenAnimations"
-import { format } from "date-fns"
 
-const userData = {
-  profileImageUrl: "./sad-face.png",
-  name: "Joe Mama",
-  level: 10,
-  couponPoints: 60,
-  consultationPoints: 10,
-}
+import { supabase } from '../../lib/supabase'
+import { userStore } from '../../models/UserStore'
 
 export const RewardScreen: FC<DemoTabScreenProps<"Reward">> = function DemoCommunityScreen(
   _props,
 ) {
   const [level, setLevel] = useState(0)
   const [name, setName] = useState("")
-  const [couponPoints, setCouponPoints] = useState(0)
-  const [consultationPoints, setConsultationPoints] = useState(0)
-  const [totalPoints, setTotalPoints] = useState(0)
+  const [points, setPoints] = useState(0)
 
   const progressRef1 = useRef<ProgressRef>(null)
   const progressRef2 = useRef<ProgressRef>(null)
@@ -37,26 +29,55 @@ export const RewardScreen: FC<DemoTabScreenProps<"Reward">> = function DemoCommu
     day : 'numeric'
   });
 
-  const resetValues = () => {
-    setLevel(0)
-    setName("")
-    setTotalPoints(0)
-    setCouponPoints(0)
-    setConsultationPoints(0)
-  }
-
-  const updateValues = () => {
-    resetValues()
-    setConsultationPoints(userData.consultationPoints)
-    setCouponPoints(userData.couponPoints)
-    setTotalPoints(userData.couponPoints + userData.consultationPoints)
-    setLevel(userData.level)
-    setName(userData.name)
-  }
-
   useEffect(() => {
-    updateValues()
-  }, [])
+    const fetchUserData = async () => {
+      const userEmail = userStore.userEmail;
+      const userName = userStore.userName;
+      if (!userEmail) {
+        return;
+      }
+
+      const { data, error } = await supabase 
+        .from('user_info')
+        .select('name, level, points')
+        .eq('email', userEmail)
+        .single()
+        
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      console.log(data);
+      if (data) {
+        setName(data.name);
+        setLevel(data.level);
+        setPoints(data.points);
+      } else {
+        console.log("No data found");
+        const { data: insertData, error: insertError } = await supabase
+        .from('user_info')
+        .insert([{ email: userEmail, name: userName, level: 1, points: 0},])
+        .select()
+        .single();
+
+        if (insertError) {
+          console.error(insertError);
+          return;
+        }
+
+        if (insertData) {
+          setName(userName);
+          setLevel(1);
+          setPoints(0);
+        }
+        
+      }
+    }
+
+    fetchUserData();
+  }, [userStore.userEmail]);
 
   return (
     <Screen
@@ -80,7 +101,7 @@ export const RewardScreen: FC<DemoTabScreenProps<"Reward">> = function DemoCommu
             />
           <View style={styles.circleProgressBar}>
             <CircularProgressBase
-              value={totalPoints}
+              value={points}
               radius={175}
               duration={2000}
               maxValue={100}
@@ -90,13 +111,12 @@ export const RewardScreen: FC<DemoTabScreenProps<"Reward">> = function DemoCommu
               activeStrokeWidth={100}
               inActiveStrokeWidth={100}
             >
-                <Text text={totalPoints.toString()} preset="heading" size="xxl" />
+                <Text text={points.toString()} preset="heading" size="xxl" />
                 <Text text={"Out of 100"} preset="subheading" size="md" />
             </CircularProgressBase>
             <Button
               style={styles.reloadButton}
               onPress={() => {
-                updateValues()
                 animations.startReloadRotate()
                 progressRef1.current?.reAnimate()
                 progressRef2.current?.reAnimate()
@@ -130,7 +150,7 @@ export const RewardScreen: FC<DemoTabScreenProps<"Reward">> = function DemoCommu
                 ContentComponent={
                   <View>
                     <Bar
-                      progress={totalPoints / 100}
+                      progress={points / 100}
                       width={null}
                       color={colors.palette.accent500}
                       borderRadius={0}
