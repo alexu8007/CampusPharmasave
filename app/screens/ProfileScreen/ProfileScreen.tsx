@@ -178,7 +178,7 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
               radius={70}
               duration={2000}
               maxValue={100}
-              inActiveStrokeColor={colors.transparent}
+              inActiveStrokeColor={colors.palette.accent100}
               activeStrokeColor={colors.palette.secondary500}
               ref={progressRef2}
             >

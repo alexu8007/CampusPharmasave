@@ -59,11 +59,11 @@ const ProfileScreenStyles = StyleSheet.create({
     width: 40,
   },
   profileButtons: {
-    alignItems: 'center',
+    alignItems: "center",
     backgroundColor: colors.transparent,
     borderColor: colors.transparent,
     height: 40,
-    justifyContent: 'center',
+    justifyContent: "center",
     minHeight: 0,
     paddingHorizontal: 0,
     paddingVertical: 0,
@@ -86,6 +86,15 @@ const ProfileScreenStyles = StyleSheet.create({
     zIndex: 1,
   },
 
+  profileIconsContainer: {
+    alignItems: "center",
+    height: 40,
+    position: "absolute",
+    right: spacing.md,
+    top: spacing.md,
+    width: 40,
+  },
+  
   profileImage: {
     borderColor: colors.palette.accent400,
     borderRadius: 100,
@@ -101,18 +110,9 @@ const ProfileScreenStyles = StyleSheet.create({
   },
 
   profileLogoutButton: {
-    width: 35,
     height: 35,
     tintColor: colors.palette.neutral100,
-  },
-
-  profileIconsContainer: {
-    alignItems: 'center',
-    height: 40,
-    position: "absolute",
-    right: spacing.md,
-    top: spacing.md,
-    width: 40,
+    width: 35,
   },
 
   profileText: {
