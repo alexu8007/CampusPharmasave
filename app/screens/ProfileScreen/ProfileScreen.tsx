@@ -97,42 +97,38 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
             <Button
               style={styles.profileButtons}
               pressedStyle={styles.profileButtons}
-              onPress={animations.startShake}
+              onPress={() => {
+                animations.startShake()
+                handleLogout()
+              }}
             >
               <Animated.View
                 style={{
                   transform: [{ translateX: animations.shakeAnimation }],
                 }}
               >
-                <Image style={styles.imgTint} source={require("../../../assets/icons/bell.png")} />
+                <Image
+                  style={styles.profileLogoutButton}
+                  source={require("../../../assets/icons/logout.png")}
+                />
               </Animated.View>
             </Button>
           </View>
         }
         RightComponent={
           <View style={styles.profileIconsContainer}>
-              <Button
-                style={styles.profileButtons}
-                pressedStyle={styles.profileButtons}
-                onPress={animations.startSettingsRotate}
-              >
-                <Animated.View style={{ transform: [{ rotate: animations.settingsSpin }] }}>
-                  <Image
-                    style={styles.imgTint}
-                    source={require("../../../assets/icons/settings.png")}
-                  />
-                </Animated.View>
-              </Button>
-              <Button
-                style={styles.profileButtons}
-                pressedStyle={styles.profileButtons}
-                onPress={handleLogout}
-              >
+            <Button
+              style={styles.profileButtons}
+              pressedStyle={styles.profileButtons}
+              onPress={animations.startSettingsRotate}
+            >
+              <Animated.View style={{ transform: [{ rotate: animations.settingsSpin }] }}>
                 <Image
-                  style={styles.profileLogoutButton}
-                  source={require("../../../assets/icons/logout.png")}
+                  style={styles.imgTint}
+                  source={require("../../../assets/icons/settings.png")}
                 />
-              </Button>
+              </Animated.View>
+            </Button>
           </View>
         }
         HeadingComponent={

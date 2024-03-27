@@ -30,7 +30,6 @@ export const SignupScreen: FC<SignupScreenProps> = observer(function SignupScree
   }
 
   async function signUpWithEmail() {
-    setLoading(true)
     if (checkPassword()) {
       const { error } = await supabase.auth.signUp({
         email,
@@ -39,6 +38,7 @@ export const SignupScreen: FC<SignupScreenProps> = observer(function SignupScree
           data: {
             first_name: firstName,
             last_name: lastName,
+            full_name: `${firstName} ${lastName}`,
           },
         },
       })
@@ -46,7 +46,23 @@ export const SignupScreen: FC<SignupScreenProps> = observer(function SignupScree
       if (error) {
         Alert.alert(error.message)
       }
-      setLoading(false)
+    }
+  }
+
+  async function insertToTable() {
+    const { error } = await supabase.from("user_info").insert([
+      {
+        name: `${firstName} ${lastName}`,
+        email,
+        level: 0,
+        points: 0,
+      },
+    ])
+
+    if (error) {
+      Alert.alert(error.message)
+    } else {
+      // Handle success if needed
     }
   }
 
@@ -138,7 +154,12 @@ export const SignupScreen: FC<SignupScreenProps> = observer(function SignupScree
         text={loading ? "Signing Up..." : "Tap to Sign Up!"}
         style={$tapButton}
         preset="reversed"
-        onPress={signUpWithEmail}
+        onPress={() => {
+          setLoading(true)
+          signUpWithEmail()
+          insertToTable()
+          setLoading(false)
+        }}
         disabled={loading}
       />
 

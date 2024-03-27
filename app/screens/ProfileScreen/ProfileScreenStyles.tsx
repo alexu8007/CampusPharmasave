@@ -53,6 +53,7 @@ const ProfileScreenStyles = StyleSheet.create({
   profileBellIconContainer: {
     height: 40,
     left: spacing.md,
+    paddingTop: spacing.xxxs,
     position: "absolute",
     top: spacing.md,
     width: 40,
@@ -100,9 +101,9 @@ const ProfileScreenStyles = StyleSheet.create({
   },
 
   profileLogoutButton: {
-    height: 25,
+    width: 35,
+    height: 35,
     tintColor: colors.palette.neutral100,
-    width: 25,
   },
 
   profileIconsContainer: {
