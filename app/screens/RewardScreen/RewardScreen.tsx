@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState, useRef } from "react"
-import { Image, View, Animated } from "react-native"
+import { Image, View, Animated, Alert } from "react-native"
 import { Screen, Card, Text, Button} from "../../components"
 import { DemoTabScreenProps } from "../../navigators/DemoNavigator"
 import { CircularProgressBase, ProgressRef } from "react-native-circular-progress-indicator"
@@ -31,49 +31,28 @@ export const RewardScreen: FC<DemoTabScreenProps<"Reward">> = function DemoCommu
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const userEmail = userStore.userEmail;
-      const userName = userStore.userName;
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      const userEmail = user?.email
       if (!userEmail) {
-        return;
+        return
       }
-
-      const { data, error } = await supabase 
-        .from('user_info')
-        .select('name, level, points')
-        .eq('email', userEmail)
+  
+      const { data, error } = await supabase
+        .from("user_info")
+        .select("name, level, points")
+        .eq("email", userEmail)
         .single()
-        
-
+  
       if (error) {
-        console.error(error);
-        return;
+        Alert.alert(error.message)
+        return
       }
-
-      console.log(data);
-      if (data) {
-        setName(data.name);
-        setLevel(data.level);
-        setPoints(data.points);
-      } else {
-        console.log("No data found");
-        const { data: insertData, error: insertError } = await supabase
-        .from('user_info')
-        .insert([{ email: userEmail, name: userName, level: 1, points: 0},])
-        .select()
-        .single();
-
-        if (insertError) {
-          console.error(insertError);
-          return;
-        }
-
-        if (insertData) {
-          setName(userName);
-          setLevel(1);
-          setPoints(0);
-        }
-        
-      }
+  
+      setName(data.name)
+      setLevel(data.level)
+      setPoints(data.points)
     }
 
     fetchUserData();
