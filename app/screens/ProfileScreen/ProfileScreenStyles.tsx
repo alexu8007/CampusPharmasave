@@ -43,7 +43,7 @@ const ProfileScreenStyles = StyleSheet.create({
   pointsFooter: {
     flexDirection: "row",
     justifyContent: "space-evenly",
-    marginTop: spacing.sm,
+    // marginTop: spacing.sm,
     width: "100%",
   },
 
@@ -71,16 +71,15 @@ const ProfileScreenStyles = StyleSheet.create({
   },
 
   profileCard: {
-    alignItems: "center",
     backgroundColor: colors.palette.secondary500,
     borderRadius: spacing.xl,
-    elevation: 6,
+    elevation: 20,
     flexDirection: "column",
     height: 400,
     padding: spacing.md,
     shadowColor: colors.palette.neutral1800,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.5,
     shadowRadius: 10,
     width: "100%",
     zIndex: 1,
@@ -88,13 +87,11 @@ const ProfileScreenStyles = StyleSheet.create({
 
   profileIconsContainer: {
     alignItems: "center",
-    height: 40,
     position: "absolute",
     right: spacing.md,
     top: spacing.md,
-    width: 40,
   },
-  
+
   profileImage: {
     borderColor: colors.palette.accent400,
     borderRadius: 100,
@@ -113,6 +110,19 @@ const ProfileScreenStyles = StyleSheet.create({
     height: 35,
     tintColor: colors.palette.neutral100,
     width: 35,
+  },
+
+  profileSettingsDropdown: {
+    alignItems: "center",
+    backgroundColor: colors.background,
+    borderRadius: 25,
+    elevation: 100,
+    justifyContent: "space-evenly",
+    position: "absolute",
+    shadowOffset: { width: -spacing.lg, height: spacing.lg },
+    shadowOpacity: 0.5,
+    top: spacing.xl + spacing.xxs,
+    width: 50,
   },
 
   profileText: {

@@ -8,7 +8,6 @@ import styles from "./ProfileScreenStyles"
 import { colors } from "app/theme"
 import * as animations from "./ProfileScreenAnimations"
 import { supabase } from "app/lib/supabase"
-import { userStore } from "app/models/UserStore"
 
 export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCommunityScreen(
   _props,
@@ -16,10 +15,39 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
   const [level, setLevel] = useState(0)
   const [name, setName] = useState("")
   const [points, setPoints] = useState(0)
+  const [settingsHidden, setSettingsHidden] = useState(true)
 
   const progressRef1 = useRef<ProgressRef>(null)
 
+  const [settingsCardHeight] = useState(new Animated.Value(0)) // Initial height 0
+  const toggleSettingsDropdown = () => {
+    // If currently hidden
+    if (settingsHidden) {
+      setSettingsHidden(false)
+
+      Animated.timing(settingsCardHeight, {
+        toValue: 200,
+        duration: 1000,
+        useNativeDriver: false,
+      }).start()
+    } else {
+      // Start retracting animation.
+      Animated.timing(settingsCardHeight, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: false,
+      }).start(() => {
+        // Update state to hide the dropdown after animation completes.
+        setSettingsHidden(true)
+      })
+    }
+  }
+
   const fetchUserData = async () => {
+    if (!settingsHidden) {
+      toggleSettingsDropdown()
+    }
+
     const {
       data: { user },
     } = await supabase.auth.getUser()
@@ -55,7 +83,7 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
 
   useEffect(() => {
     fetchUserData()
-  }, [userStore.userEmail])
+  }, [])
 
   return (
     <Screen
@@ -92,18 +120,34 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
         }
         RightComponent={
           <View style={styles.profileIconsContainer}>
-            <Button
-              style={styles.profileButtons}
-              pressedStyle={styles.profileButtons}
-              onPress={animations.startSettingsRotate}
-            >
-              <Animated.View style={{ transform: [{ rotate: animations.settingsSpin }] }}>
-                <Image
-                  style={styles.imgTint}
-                  source={require("../../../assets/icons/settings.png")}
-                />
+            <View>
+              <Button
+                style={styles.profileButtons}
+                pressedStyle={styles.profileButtons}
+                onPress={() => {
+                  animations.startSettingsRotate()
+                  toggleSettingsDropdown()
+                }}
+              >
+                <Animated.View style={{ transform: [{ rotate: animations.settingsSpin }] }}>
+                  <Image
+                    style={styles.imgTint}
+                    source={require("../../../assets/icons/settings.png")}
+                  />
+                </Animated.View>
+              </Button>
+            </View>
+            {!settingsHidden && (
+              <Animated.View
+                style={[styles.profileSettingsDropdown, { height: settingsCardHeight }]}
+              >
+                {/* TODO: make into actual icons */}
+                <Text onPress={() => console.log("A")} text="A" />
+                <Text onPress={() => console.log("B")} text="B" />
+                <Text onPress={() => console.log("C")} text="C" />
+                <Text onPress={() => console.log("D")} text="D" />
               </Animated.View>
-            </Button>
+            )}
           </View>
         }
         HeadingComponent={
@@ -137,13 +181,13 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
         HeadingComponent={
           <View>
             <Text style={styles.pointsText} text="Your Points" preset="formLabel" />
-            {/* <Text
+            <Text
               preset="formHelper"
               weight="light"
               size="xs"
               style={styles.pointsText}
               text={`${100 - points} points left to level up!`}
-            /> */}
+            />
           </View>
         }
         ContentComponent={
@@ -176,39 +220,39 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
             </Button>
           </View>
         }
-        FooterComponent={
-          // <View style={styles.pointsFooter}>
-          //   <View style={styles.colorContainer}>
-          //     <View style={[styles.circleColor, { backgroundColor: colors.palette.accent500 }]} />
-          //     <Text
-          //       preset="default"
-          //       size="xs"
-          //       weight="light"
-          //       style={styles.pointsText}
-          //       text={`Coupon\n${points}`}
-          //     />
-          //   </View>
-          //   <View style={styles.colorContainer}>
-          //     <View
-          //       style={[styles.circleColor, { backgroundColor: colors.palette.secondary500 }]}
-          //     />
-          //     <Text
-          //       preset="default"
-          //       size="xs"
-          //       weight="light"
-          //       style={styles.pointsText}
-          //       text={`Consultation\n${points}`}
-          //     />
-          //   </View>
-          // </View>
-          <Text
-              preset="formHelper"
-              weight="light"
-              size="xs"
-              style={styles.pointsText}
-              text={`${100 - points} points left to level up!`}
-            />
-        }
+        // FooterComponent={
+        //   <View style={styles.pointsFooter}>
+        //     <View style={styles.colorContainer}>
+        //       <View style={[styles.circleColor, { backgroundColor: colors.palette.accent500 }]} />
+        //       <Text
+        //         preset="default"
+        //         size="xs"
+        //         weight="light"
+        //         style={styles.pointsText}
+        //         text={`Coupon\n${points}`}
+        //       />
+        //     </View>
+        //     <View style={styles.colorContainer}>
+        //       <View
+        //         style={[styles.circleColor, { backgroundColor: colors.palette.secondary500 }]}
+        //       />
+        //       <Text
+        //         preset="default"
+        //         size="xs"
+        //         weight="light"
+        //         style={styles.pointsText}
+        //         text={`Consultation\n${points}`}
+        //       />
+        //     </View>
+        //   </View>
+        //   // <Text
+        //   //     preset="formHelper"
+        //   //     weight="light"
+        //   //     size="xs"
+        //   //     style={styles.pointsText}
+        //   //     text={`${100 - points} points left to level up!`}
+        //   //   />
+        // }
       />
     </Screen>
   )
