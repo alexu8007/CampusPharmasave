@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState, useRef } from "react"
 import { Image, View, Animated, Alert } from "react-native"
-import { Screen, Card, Text, Button } from "../../components"
+import { Screen, Card, Text, Button, Icon, ListItem } from "../../components"
 import { DemoTabScreenProps } from "../../navigators/DemoNavigator"
 import CircularProgress, { ProgressRef } from "react-native-circular-progress-indicator"
 
@@ -16,10 +16,17 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
   const [name, setName] = useState("")
   const [points, setPoints] = useState(0)
   const [settingsHidden, setSettingsHidden] = useState(true)
+  const [showMenuIcon, setShowMenuIcon] = useState(true)
+  const [disableLogout, setDisableLogout] = useState(false)
 
   const progressRef1 = useRef<ProgressRef>(null)
 
   const [settingsCardHeight] = useState(new Animated.Value(0)) // Initial height 0
+  const dropdownItemOpacity = settingsCardHeight.interpolate({
+    inputRange: [0, 50, 200], // Adjust these values as needed
+    outputRange: [0, 0, 1], // Starts fully transparent, remains transparent up to height 50, and then fully opaque
+    extrapolate: "clamp", // Prevents extrapolating beyond outputRange values
+  })
   const toggleSettingsDropdown = () => {
     // If currently hidden
     if (settingsHidden) {
@@ -46,7 +53,9 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
   const fetchUserData = async () => {
     if (!settingsHidden) {
       toggleSettingsDropdown()
+      setShowMenuIcon(true)
     }
+    setDisableLogout(false)
 
     const {
       data: { user },
@@ -100,7 +109,9 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
             <Button
               style={styles.profileButtons}
               pressedStyle={styles.profileButtons}
+              disabled={disableLogout}
               onPress={() => {
+                setDisableLogout(true)
                 animations.startShake()
                 handleLogout()
               }}
@@ -125,15 +136,17 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
                 style={styles.profileButtons}
                 pressedStyle={styles.profileButtons}
                 onPress={() => {
-                  animations.startSettingsRotate()
+                  animations.startMenuRotate()
+                  setShowMenuIcon(!showMenuIcon)
                   toggleSettingsDropdown()
                 }}
               >
-                <Animated.View style={{ transform: [{ rotate: animations.settingsSpin }] }}>
-                  <Image
-                    style={styles.imgTint}
-                    source={require("../../../assets/icons/settings.png")}
-                  />
+                <Animated.View style={{ transform: [{ rotate: animations.menuSpin }] }}>
+                  {showMenuIcon ? (
+                    <Icon icon="menu" style={styles.imgTint} />
+                  ) : (
+                    <Icon icon="x" style={styles.imgTint} />
+                  )}
                 </Animated.View>
               </Button>
             </View>
@@ -141,11 +154,31 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
               <Animated.View
                 style={[styles.profileSettingsDropdown, { height: settingsCardHeight }]}
               >
-                {/* TODO: make into actual icons */}
-                <Text onPress={() => console.log("A")} text="A" />
-                <Text onPress={() => console.log("B")} text="B" />
-                <Text onPress={() => console.log("C")} text="C" />
-                <Text onPress={() => console.log("D")} text="D" />
+                <Animated.View
+                  style={[
+                    styles.profileSettingsDropdownItemsContainer,
+                    { opacity: dropdownItemOpacity },
+                  ]}
+                >
+                  <ListItem
+                    leftIcon="settings"
+                    text="Settings"
+                    rightIcon="caretRight"
+                    textStyle={styles.profileSettingsDropdownItemsText}
+                  />
+                  <ListItem
+                    leftIcon="components"
+                    text="Coupon History"
+                    rightIcon="caretRight"
+                    textStyle={styles.profileSettingsDropdownItemsText}
+                  />
+                  <ListItem
+                    leftIcon="heart"
+                    text="Contact Us"
+                    rightIcon="caretRight"
+                    textStyle={styles.profileSettingsDropdownItemsText}
+                  />
+                </Animated.View>
               </Animated.View>
             )}
           </View>
@@ -208,6 +241,9 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
               onPress={() => {
                 fetchUserData()
                 animations.startReloadRotate()
+                if (!showMenuIcon) {
+                  animations.startMenuRotate()
+                }
                 progressRef1.current?.reAnimate()
               }}
             >

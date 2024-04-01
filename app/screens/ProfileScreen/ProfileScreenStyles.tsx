@@ -117,12 +117,22 @@ const ProfileScreenStyles = StyleSheet.create({
     backgroundColor: colors.background,
     borderRadius: 25,
     elevation: 100,
-    justifyContent: "space-evenly",
+    overflow: 'hidden',
+    paddingHorizontal: spacing.md,
     position: "absolute",
+    right: 0,
     shadowOffset: { width: -spacing.lg, height: spacing.lg },
     shadowOpacity: 0.5,
     top: spacing.xl + spacing.xxs,
-    width: 50,
+    width: 200,
+  },
+  profileSettingsDropdownItemsContainer: {
+    height: "100%",
+    justifyContent: "space-evenly",
+    width: "100%",
+  },
+  profileSettingsDropdownItemsText: {
+    textAlign: 'center',
   },
 
   profileText: {
