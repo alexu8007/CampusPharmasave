@@ -10,6 +10,7 @@ import Config from "../../config"
 import { GeneralApiProblem, getGeneralApiProblem } from "./apiProblem"
 import type { ApiConfig, ApiFeedResponse } from "./api.types"
 import type { EpisodeSnapshotIn } from "../../models/Episode"
+import { supabase } from "app/lib/supabase"
 
 /**
  * Configuring the apisauce instance.
@@ -50,6 +51,9 @@ export class Api {
       `api.json?rss_url=https%3A%2F%2Ffeeds.simplecast.com%2FhEI_f9Dx`,
     )
 
+    const { data, error } = await supabase.from('Coupons').select('*')
+    console.log(response.data)
+
     // the typical ways to die when calling an api
     if (!response.ok) {
       const problem = getGeneralApiProblem(response)
@@ -58,12 +62,25 @@ export class Api {
 
     // transform the data into the format we are expecting
     try {
-      const rawData = response.data
-
       // This is where we transform the data into the shape we expect for our MST model.
       const episodes: EpisodeSnapshotIn[] =
-        rawData?.items.map((raw) => ({
-          ...raw,
+        data?.map((raw) => ({
+          title: raw.name,
+          pubDate: raw.expirydate,
+          link: raw.imageURL,
+          guid: raw.ID,
+          author: raw.sale,
+          thumbnail: raw.ID,
+          description: raw.ID,
+          content: raw.ID,
+          enclosure: {
+            link: raw.ID,
+            type: raw.ID,
+            length: 1,
+            duration: 1,
+            rating: { scheme: raw.ID, value: raw.ID }
+          },
+          categories: [],
         })) ?? []
 
       return { kind: "ok", episodes }

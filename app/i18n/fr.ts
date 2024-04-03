@@ -103,7 +103,7 @@ const fr: Translations = {
       "Si cela ne fonctionne pas, assurez-vous que l'application de bureau Reactotron est en cours d'exécution, puis rechargez l'application.",
   },
   demoPodcastListScreen: {
-    title: "Épisodes de Radio React Native",
+    title: "Pharmasave Coupon",
     onlyFavorites: "Afficher uniquement les favoris",
     favoriteButton: "Favori",
     unfavoriteButton: "Non favori",

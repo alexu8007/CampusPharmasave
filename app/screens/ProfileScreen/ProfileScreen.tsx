@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState, useRef } from "react"
-import { Image, View, Animated, Alert } from "react-native"
+import { Image, View, Animated, Alert, Linking } from "react-native"
 import { Screen, Card, Text, Button, Icon, ListItem } from "../../components"
 import { DemoTabScreenProps } from "../../navigators/DemoNavigator"
 import CircularProgress, { ProgressRef } from "react-native-circular-progress-indicator"
@@ -160,23 +160,32 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
                     { opacity: dropdownItemOpacity },
                   ]}
                 >
-                  <ListItem
-                    leftIcon="settings"
-                    text="Settings"
-                    rightIcon="caretRight"
-                    textStyle={styles.profileSettingsDropdownItemsText}
-                  />
-                  <ListItem
-                    leftIcon="components"
-                    text="Coupon History"
-                    rightIcon="caretRight"
-                    textStyle={styles.profileSettingsDropdownItemsText}
-                  />
+                    <ListItem
+                      leftIcon="settings"
+                      text="Settings"
+                      rightIcon="caretRight"
+                      textStyle={styles.profileSettingsDropdownItemsText}
+                      onPress={() => {
+                        Linking.openURL("https://pillthought.com")
+                      }}
+                    />
+                    <ListItem
+                      leftIcon="components"
+                      text="Coupon History"
+                      rightIcon="caretRight"
+                      textStyle={styles.profileSettingsDropdownItemsText}
+                      onPress={() => {
+                        Linking.openURL("https://pillthought.com")
+                      }}
+                    />
                   <ListItem
                     leftIcon="heart"
                     text="Contact Us"
                     rightIcon="caretRight"
                     textStyle={styles.profileSettingsDropdownItemsText}
+                    onPress={() => {
+                      Linking.openURL("https://pillthought.com")
+                    }}
                   />
                 </Animated.View>
               </Animated.View>
@@ -219,7 +228,7 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
               weight="light"
               size="xs"
               style={styles.pointsText}
-              text={`${100 - points} points left to level up!`}
+              text={`${500 - points} points left to level up!`}
             />
           </View>
         }
@@ -229,10 +238,10 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
               value={points}
               radius={70}
               duration={2000}
-              maxValue={100}
+              maxValue={500}
               inActiveStrokeColor={colors.palette.accent100}
               activeStrokeColor={colors.palette.accent500}
-              progressValueColor={colors.palette.secondary500}
+              progressValueColor={"#850808"}
               ref={progressRef1}
             />
             <Button

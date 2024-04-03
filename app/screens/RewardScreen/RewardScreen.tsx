@@ -29,6 +29,31 @@ export const RewardScreen: FC<DemoTabScreenProps<"Reward">> = function DemoCommu
     day : 'numeric'
   });
 
+  const fetchUserData = async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+    const userEmail = user?.email
+    if (!userEmail) {
+      return
+    }
+
+    const { data, error } = await supabase
+      .from("user_info")
+      .select("name, level, points")
+      .eq("email", userEmail)
+      .single()
+
+    if (error) {
+      Alert.alert(error.message)
+      return
+    }
+
+    setName(data.name)
+    setLevel(data.level)
+    setPoints(data.points)
+  }
+
   useEffect(() => {
     const fetchUserData = async () => {
       const {
@@ -83,19 +108,20 @@ export const RewardScreen: FC<DemoTabScreenProps<"Reward">> = function DemoCommu
               value={points}
               radius={175}
               duration={2000}
-              maxValue={100}
-              inActiveStrokeColor={colors.palette.neutral300}
-              activeStrokeColor={colors.palette.accent500}
+              maxValue={500}
+              inActiveStrokeColor={"white"}
+              activeStrokeColor={"#850808"}
               ref={progressRef2}
               activeStrokeWidth={100}
               inActiveStrokeWidth={100}
             >
                 <Text text={points.toString()} preset="heading" size="xxl" />
-                <Text text={"Out of 100"} preset="subheading" size="md" />
+                <Text text={"Out of 500"} preset="subheading" size="md" />
             </CircularProgressBase>
             <Button
               style={styles.reloadButton}
               onPress={() => {
+                fetchUserData()
                 animations.startReloadRotate()
                 progressRef1.current?.reAnimate()
                 progressRef2.current?.reAnimate()
@@ -129,9 +155,9 @@ export const RewardScreen: FC<DemoTabScreenProps<"Reward">> = function DemoCommu
                 ContentComponent={
                   <View>
                     <Bar
-                      progress={points / 100}
+                      progress={points / 500}
                       width={null}
-                      color={colors.palette.accent500}
+                      color={"#850808"}
                       borderRadius={0}
                       height={20}
                     />

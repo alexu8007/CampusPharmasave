@@ -71,7 +71,7 @@ const ProfileScreenStyles = StyleSheet.create({
   },
 
   profileCard: {
-    backgroundColor: colors.palette.secondary500,
+    backgroundColor: "#850808",
     borderRadius: spacing.xl,
     elevation: 20,
     flexDirection: "column",
@@ -93,7 +93,7 @@ const ProfileScreenStyles = StyleSheet.create({
   },
 
   profileImage: {
-    borderColor: colors.palette.accent400,
+    borderColor: "#850808",
     borderRadius: 100,
     borderWidth: 2,
     height: 130,

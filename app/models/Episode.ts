@@ -31,7 +31,7 @@ export const EpisodeModel = types
   .actions(withSetPropAction)
   .views((episode) => ({
     get parsedTitleAndSubtitle() {
-      const defaultValue = { title: episode.title?.trim(), subtitle: "" }
+      const defaultValue = { title: episode.title?.trim(), subtitle: episode.author }
 
       if (!defaultValue.title) return defaultValue
 
@@ -45,13 +45,13 @@ export const EpisodeModel = types
       try {
         const formatted = formatDate(episode.pubDate)
         return {
-          textLabel: formatted,
+          textLabel: "Expires",
           accessibilityLabel: translate("demoPodcastListScreen.accessibility.publishLabel", {
             date: formatted,
           }),
         }
       } catch (error) {
-        return { textLabel: "", accessibilityLabel: "" }
+        return { textLabel: "Expires", accessibilityLabel: "" }
       }
     },
     get duration() {
@@ -64,7 +64,7 @@ export const EpisodeModel = types
       const mDisplay = m > 0 ? `${m}:` : ""
       const sDisplay = s > 0 ? s : ""
       return {
-        textLabel: hDisplay + mDisplay + sDisplay,
+        textLabel: episode.pubDate,
         accessibilityLabel: translate("demoPodcastListScreen.accessibility.durationLabel", {
           hours: h,
           minutes: m,

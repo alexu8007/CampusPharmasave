@@ -41,10 +41,11 @@ import { openLinkInBrowser } from "../utils/openLinkInBrowser"
 
 const ICON_SIZE = 14
 
-const rnrImage1 = require("../../assets/images/demo/rnr-image-1.png")
-const rnrImage2 = require("../../assets/images/demo/rnr-image-2.png")
-const rnrImage3 = require("../../assets/images/demo/rnr-image-3.png")
+const rnrImage1 = require("../../assets/images/demo/pharmaLOGO.jpg")
+const rnrImage2 = require("../../assets/images/demo/pharmaLOGO.jpg")
+const rnrImage3 = require("../../assets/images/demo/pharmaLOGO.jpg")
 const rnrImages = [rnrImage1, rnrImage2, rnrImage3]
+
 
 export const DemoPodcastListScreen: FC<DemoTabScreenProps<"DemoPodcastList">> = observer(
   function DemoPodcastListScreen(_props) {
@@ -52,6 +53,7 @@ export const DemoPodcastListScreen: FC<DemoTabScreenProps<"DemoPodcastList">> = 
 
     const [refreshing, setRefreshing] = React.useState(false)
     const [isLoading, setIsLoading] = React.useState(false)
+
 
     // initially, kick off a background refresh without the refreshing UI
     useEffect(() => {
@@ -69,12 +71,15 @@ export const DemoPodcastListScreen: FC<DemoTabScreenProps<"DemoPodcastList">> = 
       setRefreshing(false)
     }
 
+    
+
     return (
       <Screen
         preset="fixed"
         safeAreaEdges={["top"]}
         contentContainerStyle={$screenContentContainer}
-      >
+      > 
+
         <ListView<Episode>
           contentContainerStyle={$listContentContainer}
           data={episodeStore.episodesForList.slice()}
@@ -127,11 +132,11 @@ export const DemoPodcastListScreen: FC<DemoTabScreenProps<"DemoPodcastList">> = 
             </View>
           }
           renderItem={({ item }) => (
-            <EpisodeCard
-              episode={item}
-              isFavorite={episodeStore.hasFavorite(item)}
-              onPressFavorite={() => episodeStore.toggleFavorite(item)}
-            />
+              <EpisodeCard
+                episode={item}
+                isFavorite={episodeStore.hasFavorite(item)}
+                onPressFavorite={() => episodeStore.toggleFavorite(item)}
+              />
           )}
         />
       </Screen>
@@ -149,6 +154,8 @@ const EpisodeCard = observer(function EpisodeCard({
   isFavorite: boolean
 }) {
   const liked = useSharedValue(isFavorite ? 1 : 0)
+
+  
 
   const imageUri = useMemo<ImageSourcePropType>(() => {
     return rnrImages[Math.floor(Math.random() * rnrImages.length)]
