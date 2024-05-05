@@ -29,14 +29,14 @@ const fonts = {
   },
   helveticaNeue: {
     // iOS only font.
-    thin: "HelveticaNeue-Thin",
+    thin: "HelveticaNeue-Light",
     light: "HelveticaNeue-Light",
     normal: "Helvetica Neue",
     medium: "HelveticaNeue-Medium",
   },
   courier: {
     // iOS only font.
-    normal: "Courier",
+    normal: "HelveticaNeue-Medium",
   },
   sansSerif: {
     // Android only font.

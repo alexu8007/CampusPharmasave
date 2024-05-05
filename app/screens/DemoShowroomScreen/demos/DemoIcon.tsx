@@ -31,12 +31,12 @@ const $customIcon: ImageStyle = {
 }
 
 export const DemoIcon: Demo = {
-  name: "Icon",
+  name: "Options",
   description:
     "A component to render a registered icon. It is wrapped in a <TouchableOpacity /> if `onPress` is provided, otherwise a <View />.",
   data: [
     <DemoUseCase
-      name="Icons"
+      name="Coupons"
       description="List of icons registered inside the component."
       layout="row"
     >
@@ -51,14 +51,14 @@ export const DemoIcon: Demo = {
       ))}
     </DemoUseCase>,
 
-    <DemoUseCase name="Size" description="There's a size prop." layout="row">
+    <DemoUseCase name="Reward" description="There's a size prop." layout="row">
       <Icon icon="ladybug" containerStyle={$demoIconContainer} />
       <Icon icon="ladybug" size={35} containerStyle={$demoIconContainer} />
       <Icon icon="ladybug" size={50} containerStyle={$demoIconContainer} />
       <Icon icon="ladybug" size={75} containerStyle={$demoIconContainer} />
     </DemoUseCase>,
 
-    <DemoUseCase name="Color" description="There's a color prop." layout="row">
+    <DemoUseCase name="Profile" description="There's a color prop." layout="row">
       <Icon icon="ladybug" color={colors.palette.accent500} containerStyle={$demoIconContainer} />
       <Icon icon="ladybug" color={colors.palette.primary500} containerStyle={$demoIconContainer} />
       <Icon
@@ -70,7 +70,7 @@ export const DemoIcon: Demo = {
       <Icon icon="ladybug" color={colors.palette.angry500} containerStyle={$demoIconContainer} />
     </DemoUseCase>,
 
-    <DemoUseCase name="Styling" description="The component can be styled easily." layout="row">
+    <DemoUseCase name="Contact Us" description="The component can be styled easily." layout="row">
       <Icon icon="ladybug" style={$customIcon} size={40} containerStyle={$customIconContainer} />
     </DemoUseCase>,
   ],

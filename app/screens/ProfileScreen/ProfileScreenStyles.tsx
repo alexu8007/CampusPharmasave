@@ -21,7 +21,7 @@ const ProfileScreenStyles = StyleSheet.create({
   },
 
   imgTint: {
-    tintColor: colors.palette.neutral100,
+    tintColor: "transparent",
   },
 
   pointsCard: {

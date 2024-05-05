@@ -75,7 +75,7 @@ export const RewardScreen: FC<DemoTabScreenProps<"Reward">> = function DemoCommu
         return
       }
   
-      setName(data.name)
+      setName(data.name.split(" ")[0])
       setLevel(data.level)
       setPoints(data.points)
     }
@@ -173,7 +173,7 @@ export const RewardScreen: FC<DemoTabScreenProps<"Reward">> = function DemoCommu
                     <Text
                       preset="subheading"
                       size="xl"
-                      text="10% Off"
+                      text="Reward"
                       style={styles.benefitTitle}
                     />
                     <Text

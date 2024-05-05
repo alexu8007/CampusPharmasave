@@ -209,7 +209,7 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
               text={name}
             />
             <Text
-              style={[styles.profileText, { color: colors.palette.accent200 }]}
+              style={[styles.profileText, { color: "white" }]}
               text={`Level: ${level}`}
               preset="subheading"
               size="md"
@@ -239,8 +239,8 @@ export const ProfileScreen: FC<DemoTabScreenProps<"Profile">> = function DemoCom
               radius={70}
               duration={2000}
               maxValue={500}
-              inActiveStrokeColor={colors.palette.accent100}
-              activeStrokeColor={colors.palette.accent500}
+              inActiveStrokeColor={colors.palette.neutral200}
+              activeStrokeColor={"black"}
               progressValueColor={"#850808"}
               ref={progressRef1}
             />
